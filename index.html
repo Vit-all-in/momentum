@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="assets/favicon.ico" rel="shortcut icon" />
+  <link rel="stylesheet" href="css/owfont-regular.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <title>momentum</title>
+</head>
+<body>
+  <header class="header">
+
+    <div class="player">
+      <h4 class="track-title"></h4>
+      <span class="artist-name"></span>
+      <div class="timeline-slider">
+        <div class="timeline">
+          <small class="track-time"></small>
+          <small class="fulltime"></small>
+        </div>
+        <div class="range-slider">
+          <input type="range"
+          min = "0"
+          max = "100"
+          value="0"
+          class="slider"
+          />
+        <div class="slider-thumb"></div>
+        <div class="progress"></div>  
+        </div>
+      </div>
+      <div class="volume-slider">
+        <div class="volume-icon">
+          <span class="material-symbols-outlined"></span>
+        </div>
+        <div class="range-slider">
+          <input type="range"
+          type="range"
+          min="0"
+          max="100"
+          value="50"
+          class="slider"
+          >
+          <div class="progress"></div>
+        </div>
+      </div>
+      <div class="player-controls">
+        <button class="btn" id="btnPrev">
+          <span class="material-symbols-outlined">
+            fast_rewind
+          </span>
+        </button>
+        <button class="btn btn-main" id="mainPlayBtn">
+          <span class="material-symbols-outlined">
+            play_arrow
+          </span>
+        </button>
+        <button class="btn" id="btnNext">
+          <span class="material-symbols-outlined">
+            fast_forward
+          </span>
+        </button>
+      </div>
+      <div class="bar"></div>
+    </div>
+    <audio id="audio" hidden>
+      <source src="assets/sounds/Clint Eastwood.mp3">
+    </audio>
+
+    <div class="weather-container">
+      <input type="text" class="city" />
+      <div class="weather">
+          
+         <i class="weather-icon owf"></i>
+          <div class="weather-error"></div>
+          <div class="description-container">
+            <span class="temperature"></span>
+            <span class="weather-description"></span>
+          </div>
+          <div class="wind"></div>
+          <div class="humidity"></div>
+        
+      </div> 
+    </div>
+
+  </header>
+  <main class="main">
+    <div class="slider-icons">
+      <button class="slide-prev slider-icon"></button>
+      <button class="slide-next slider-icon"></button>
+    </div>
+    <div class="clock">
+      <h1 class="time"></h1>
+      <div class="details">
+        <h3 class="ampm"></h3>
+        <h3 class="sec"></h3>
+      </div>
+    </div>
+    <h2 class="date">
+      <span class="month"></span>
+      <span class="dayofweek"></span>
+      <span class="day"></span>
+    </h2>
+    
+    
+    <div class="greeting-container">
+      <span class="greeting"></span>
+      <span class="name" contenteditable="true"> 
+    </div>
+  </main>
+  <footer class="footer">
+    <div class="footer__task">
+    <button id="myBtn">Todo</button>
+    <div id="myModal" class="modal">
+      <div class="container">
+        <h2>Todo</h2>
+        <span class="close">&times;</span>
+        <form class="todo-form">
+          <input type="text" class="todo-input" placeholder="Add a Todo...">
+          <button type="submit" class="add-button">Add</button>
+        </form>
+    
+        <ul class="todo-items">
+
+        </ul>
+      </div>
+    </div>
+    <div class="container-quote">
+      <button class="change-quote"></button>
+      <div>
+        <div class="quote"></div>
+        <div class="author"></div>
+      </div>
+    </div>
+    <div class="settings">
+      <nav class="circular-menu">
+        <div class="circle">
+          <span class="settings-weather material-symbols-outlined">
+            sunny
+          </span>
+          <!-- <span class="settings-language material-symbols-outlined">
+            language
+          </span> -->
+          <span class="settings-audio material-symbols-outlined">
+            music_note
+          </span>
+          <span class="settings-todo material-symbols-outlined">
+            receipt_long
+          </span>
+          <span class="settings-clock material-symbols-outlined">
+            alarm
+          </span>
+          <span class="settings-greeting material-symbols-outlined">
+            waving_hand
+          </span>
+          <span class="settings-quote material-symbols-outlined">
+            format_quote
+          </span>
+          <span class="settings-month material-symbols-outlined">
+            calendar_month
+          </span>
+        </div>
+
+        <span class="menu-button material-symbols-outlined">
+          settings
+        </span>
+      </nav>
+    </div>
+  </div>
+  </footer>
+ 
+  <script type="module" src="js/index.js"></script>
+</body>
+</html>
