@@ -1,59 +1,52 @@
-export function clock() {
-   const timeOutput = document.querySelector('.time')
-   const secOutput = document.querySelector('.sec')
-   const ampmOutput = document.querySelector('.ampm')
-   const dayOfWeekOutput = document.querySelector('.dayofweek')
-   const monthOutput = document.querySelector('.month')
-   const dayOutput = document.querySelector('.day')
+export class Clock {
+   constructor() {
+      this.timeOutput = document.querySelector('.time');
+      this.secOutput = document.querySelector('.sec');
+      this.ampmOutput = document.querySelector('.ampm');
+      this.dayOfWeekOutput = document.querySelector('.dayofweek');
+      this.monthOutput = document.querySelector('.month');
+      this.dayOutput = document.querySelector('.day');
 
-   const weekday = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      this.weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-   const monthsName = [
-      'January,',
-      'February,',
-      'March,',
-      'April,',
-      'May,',
-      'June,',
-      'July,',
-      'August,',
-      'September,',
-      'October,',
-      'November,',
-      'December,',
-   ];
+      this.monthsName = [
+         'January,', 'February,', 'March,', 'April,', 'May,', 'June,', 'July,', 'August,', 'September,', 'October,', 'November,', 'December,',
+      ];
 
-   function formatTime(val) {
+
+      setInterval(() => {
+         this.updateClock();
+      }, 1000);
+   }
+
+   formatTime(val) {
       if (val < 10) {
-         return "0"
+         return "0" + val;
       } else {
-         return "";
+         return val.toString();
       }
    }
 
-   const d = new Date();
+   updateClock() {
+      const d = new Date();
 
-   const h = d.getHours();
-   const m = d.getMinutes();
-   const s = d.getSeconds();
+      const h = d.getHours();
+      const m = d.getMinutes();
+      const s = d.getSeconds();
 
-   dayOfWeekOutput.innerHTML = weekday[
-      d.getDay()
-   ]
+      this.dayOfWeekOutput.innerHTML = this.weekday[d.getDay()];
+      this.monthOutput.innerHTML = this.monthsName[d.getMonth()];
+      this.dayOutput.innerHTML = d.getDate();
 
-   monthOutput.innerHTML = monthsName[
-      d.getMonth()
-   ]
+      const time = this.formatTime(h) + ':' + this.formatTime(m);
+      const sec = this.formatTime(s);
 
-   dayOutput.innerHTML = d.getDate()
+      const ampm = h >= 12 ? "PM" : "AM";
 
-   const time = formatTime(h) + h + ':' + formatTime(m) + m;
-   const sec = formatTime(s) + s;
-
-   const ampm = h >= 12 ? "PM" : "AM";
-
-   timeOutput.innerHTML = time;
-   secOutput.innerHTML = sec;
-   ampmOutput.innerHTML = ampm;  
+      this.timeOutput.innerHTML = time;
+      this.secOutput.innerHTML = sec;
+      this.ampmOutput.innerHTML = ampm;
+   }
 }
 
+export const clock = new Clock();

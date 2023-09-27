@@ -1,110 +1,88 @@
-export function greeting() {
-   const today = new Date();
-   const hourNow = today.getHours();
-   const greeting = document.querySelector('.greeting');
-   const settingsGreeting = document.querySelector('.settings-greeting')
-   const name = document.querySelector('.name');
-   
-   const slideNext = document.querySelector('.slide-next')
-   const slidePrev = document.querySelector('.slide-prev')
- 
-   let curImage = randomImage(1, 20)
-
-   function randomImage(min, max) {
-      let rand = min + Math.random() * (max + 1 - min);
-      if (rand < 10) {
-         return "0" + Math.floor(rand)
-      }
-      return Math.floor(rand);
+export class Greeting {
+   constructor() {
+      this.today = new Date();
+      this.hourNow = this.today.getHours();
+      this.greetingElement = document.querySelector('.greeting');
    }
 
-   async function nextSlide(){
-      curImage++
-       getTimeGreetings()
-      if(curImage <= 9){
-         curImage = '0' + curImage 
-         getTimeGreetings()
-      } else {
-         curImage = curImage++ 
-         getTimeGreetings()
-      }  
-      if(curImage == '21'){
-         curImage = '01';
-         getTimeGreetings()
+   setGreeting() {
+      if (this.hourNow > 5 && this.hourNow < 12) {
+         this.greetingElement.innerHTML = `<h5 data-lang="morning">Good morning,</h5>`;
+      } else if (this.hourNow > 11 && this.hourNow < 18) {
+         this.greetingElement.innerHTML = `<h5 data-lang="afternoon">Good afternoon,</h5>`;
+      } else if (this.hourNow > 17 && this.hourNow < 24) {
+         this.greetingElement.innerHTML = `<h5 data-lang="evening">Good evening,</h5>`;
+      } else if (this.hourNow < 6) {
+         this.greetingElement.innerHTML = `<h5 data-lang="night">Good night,</h5>`;
       }
    }
+}
 
-   async function prevSlide(){
-      curImage--
-      if(curImage <= 9){
-         curImage = '0' + curImage
-         getTimeGreetings()
-      } else {
-         curImage = curImage++ 
-         getTimeGreetings()
-      }  
-      if(curImage == '00'){
-         curImage = '20';
-         getTimeGreetings()
-      } 
+export class Name {
+   constructor() {
+      this.nameElement = document.querySelector('.name');
+      this.MAX_LENGTH = 23;
+      this.loadName();
+      this.nameElement.addEventListener('input', this.setName.bind(this));
+      this.nameElement.addEventListener('keypress', this.setName.bind(this));
+      this.nameElement.addEventListener('blur', this.setName.bind(this));
    }
- 
-   slideNext.addEventListener('click', nextSlide)
-   slidePrev.addEventListener('click', prevSlide)
 
-   async function getTimeGreetings(){
-      let imagesMorning = "url('https://raw.githubusercontent.com/Vit-all-in/stage1-tasks/assets/images/morning/" + curImage + ".jpg')";
-      let imagesAfternoon = "url('https://raw.githubusercontent.com/Vit-all-in/stage1-tasks/assets/images/afternoon/" + curImage + ".jpg')";
-      let imagesEvening = "url('https://raw.githubusercontent.com/Vit-all-in/stage1-tasks/assets/images/evening/" + curImage + ".jpg')";
-      let imagesNight = "url('https://raw.githubusercontent.com/Vit-all-in/stage1-tasks/assets/images/night/" + curImage + ".jpg')";
-
-
-   if (hourNow > 5 && hourNow < 12) {
-         document.body.style.backgroundImage = imagesMorning;
-         greeting.innerHTML = `<h5 data-lang="morning">Good morning,</h5>`
-      } else if (hourNow > 11 && hourNow < 18) {
-         document.body.style.backgroundImage = imagesAfternoon;
-         greeting.innerHTML = `<h5 data-lang="diner">Good afternoon,</h5>`
-      } else if (hourNow > 17 && hourNow < 24) {
-         document.body.style.backgroundImage = imagesEvening;
-         greeting.innerHTML = `<h5 data-lang="evening">Good evening,</h5>`
-      } else if (hourNow < 6) {
-         document.body.style.backgroundImage = imagesNight;
-         greeting.innerHTML = `<h5 data-lang="night">Good night,</h5>`
-      }
-   }
-   
-   getTimeGreetings()
-
-   function getName() {
+   loadName() {
       if (localStorage.getItem('name') === null) {
-         name.textContent = 'Enter Your Name';
+         this.nameElement.textContent = 'Enter Your Name';
       } else {
-         name.textContent = localStorage.getItem('name');
+         this.nameElement.textContent = localStorage.getItem('name');
       }
    }
 
-   function setName(e) {
+   setName(e) {
       if (e.type === 'keypress') {
          if (e.which == 13 || e.keyCode == 13) {
             localStorage.setItem('name', e.target.innerText);
-            name.blur();
+            this.nameElement.blur();
          }
       } else {
          localStorage.setItem('name', e.target.innerText);
       }
    }
-
-   name.addEventListener('keypress', setName);
-   name.addEventListener('blur', setName);
-
-   getName();
-
-   settingsGreeting.addEventListener('click', () => {
-      const greeting = document.querySelector('.greeting');
-      const name = document.querySelector('.name')
-      name.classList.toggle('hidden');
-      greeting.classList.toggle('hidden');
-      settingsGreeting.classList.toggle('opacity')
-   });
 }
+
+export class ImageSlider {
+   constructor() {
+      this.slideNext = document.querySelector('.slide-next');
+      this.slidePrev = document.querySelector('.slide-prev');
+      this.images = [];
+      this.curImageIndex = 0;
+      this.loadImages();
+      this.slideNext.addEventListener('click', this.showNextImage.bind(this));
+      this.slidePrev.addEventListener('click', this.showPrevImage.bind(this));
+   }
+
+   async loadImages() {
+      try {
+         const response = await fetch('https://api.unsplash.com/photos/random?count=20&client_id=XkDCieEEsTzS7csy0qNIaIKmd0IV4OhxHqVjuqqHd9Q');
+         const images = await response.json();
+         this.images = images.map(image => image.urls.regular);
+         this.displayImage();
+      } catch (error) {
+         console.error('Ошибка при загрузке изображений:', error);
+      }
+   }
+
+   showNextImage() {
+      this.curImageIndex = (this.curImageIndex + 1) % this.images.length;
+      this.displayImage();
+   }
+
+   showPrevImage() {
+      this.curImageIndex = (this.curImageIndex - 1 + this.images.length) % this.images.length;
+      this.displayImage();
+   }
+
+   displayImage() {
+      const imageUrl = this.images[this.curImageIndex];
+      document.body.style.backgroundImage = `url('${imageUrl}')`;
+   }
+}
+

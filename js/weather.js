@@ -1,71 +1,93 @@
-export function getWeather() {
-   const apiKey = '21f086eebec74540a84221859232002'
-   let city = document.querySelector('.city')
-   const settingsWeather = document.querySelector('.settings-weather')
-
-   city.addEventListener('keypress', setQuery)
-
-   if (localStorage.getItem('city')) {
-      city.value = localStorage.getItem('city');
-   } else {
-      city.value = 'Minsk'
+export class WeatherManager {
+   constructor() {
+     this.apiKey = '21f086eebec74540a84221859232002';
+     this.city = document.querySelector('.city');
+     this.settingsWeather = document.querySelector('.settings-weather');
+     this.errorBlock = document.querySelector('.weather-error');
+     this.temperature = document.querySelector('.temperature');
+     this.weatherIcon = document.querySelector('.weather-icon');
+     this.wind = document.querySelector('.wind');
+     this.weatherDescription = document.querySelector('.weather-description');
+     this.humidity = document.querySelector('.humidity');
+ 
+     this.city.addEventListener('keypress', this.setQuery.bind(this));
+     this.settingsWeather.addEventListener('click', this.handleSettingsWeatherClick.bind(this));
+     document.addEventListener("DOMContentLoaded", this.setQuery.bind(this));
+ 
+     this.getFromLocalStorage();
+     this.getWeather();
    }
-
-   function setQuery() {
-      if (!city.value) return null;
-      localStorage.setItem('city', city.value);
-      getResults(city.value);
+ 
+   setQuery(event) {
+     if (event && event.type === 'keypress' && event.key !== 'Enter') {
+       return;
+     }
+ 
+     if (!this.city.value) {
+       return null;
+     }
+ 
+     localStorage.setItem('city', this.city.value);
+     this.getWeather();
    }
-
-   async function getResults(city) {
-      const url = `https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}`;
-
-      try {
-         await fetch(url).then((response) => {
-         return response.json()
-      }).then(displayResults)
-      } catch (error) {
-         
-      }
+ 
+   async getWeather() {
+     const city = this.city.value;
+     const url = `https://api.weatherapi.com/v1/current.json?key=${this.apiKey}&q=${city}`;
+ 
+     try {
+       const response = await fetch(url);
+       const weather = await response.json();
+       this.displayResults(weather);
+     } catch (error) {
+       console.error(error);
+     }
    }
-
-   function displayResults(weather) {
-
-      let errorBlock = document.querySelector('.weather-error');
-      let city = document.querySelector('.city');
-      let temperature = document.querySelector('.temperature');
-      let weatherIcon = document.querySelector('.weather-icon');
-      let wind = document.querySelector('.wind');  
-      let weatherDescription = document.querySelector('.weather-description');
-      let humidity = document.querySelector('.humidity');
-
-      if (weather.error) {
-         errorBlock.innerHTML = `${weather.error.message}`
-         city.innerText = '';
-         temperature.innerHTML = '';
-         weatherIcon.innerHTML = ''
-         weatherDescription.innerHTML = ''
-         wind.innerHTML = ''
-         humidity.innerHTML = ''
-      } else {
-         errorBlock.innerHTML = '';
-         city.innerText = `${weather.location.name}`;
-         temperature.innerHTML = `Temperature : ${Math.round(weather.current.temp_c)}°c`;
-         weatherIcon.innerHTML = `<img src = ${weather.current.condition.icon}>`
-         weatherDescription.innerHTML = `<div>${weather.current.condition.text}</div>`;
-         wind.innerHTML = `<span>Wind speed : </span>${weather.current.wind_kph}<span>м/c</span>`;
-         humidity.innerHTML = `<span>Humidity : </span>${weather.current.humidity}<span>%</span>`;
-      }
+ 
+   displayResults(weather) {
+     if (weather.error) {
+       this.errorBlock.innerHTML = `${weather.error.message}`;
+       this.clearWeather();
+     } else {
+       this.errorBlock.innerHTML = '';
+       this.city.innerText = `${weather.location.name}`;
+       this.temperature.innerHTML = `Temperature : ${Math.round(weather.current.temp_c)}°c`;
+       this.weatherIcon.innerHTML = `<img src=${weather.current.condition.icon}>`;
+       this.weatherDescription.innerHTML = `<div>${weather.current.condition.text}</div>`;
+       this.wind.innerHTML = `<span>Wind speed : </span>${weather.current.wind_kph}<span>м/c</span>`;
+       this.humidity.innerHTML = `<span>Humidity : </span>${weather.current.humidity}<span>%</span>`;
+     }
    }
-
-   settingsWeather.addEventListener('click', () => {
-      const containerWeather = document.querySelector('.weather-container');
-      containerWeather.classList.toggle('hidden');
-      settingsWeather.classList.toggle('opacity');
-   });
-   
-   document.addEventListener("DOMContentLoaded", setQuery) 
-}
+ 
+   getFromLocalStorage() {
+     const city = localStorage.getItem('city');
+     if (city) {
+       this.city.value = city;
+     } else {
+       this.city.value = 'Minsk';
+     }
+   }
+ 
+   clearWeather() {
+     this.city.innerText = '';
+     this.temperature.innerHTML = '';
+     this.weatherIcon.innerHTML = '';
+     this.weatherDescription.innerHTML = '';
+     this.wind.innerHTML = '';
+     this.humidity.innerHTML = '';
+   }
+ 
+   handleSettingsWeatherClick() {
+     const containerWeather = document.querySelector('.weather-container');
+     containerWeather.classList.toggle('hidden');
+     this.settingsWeather.classList.toggle('opacity');
+   }
+ }
+ 
+ // Инициализация класса
+ export function initWeather() {
+   const weatherManager = new WeatherManager();
+ }
  
 
 
