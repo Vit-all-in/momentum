@@ -11,7 +11,7 @@ export class QuoteGenerator {
    
    async getQuote() {
     try {
-      const response = await fetch('../assets/json/quotes.json');
+      const response = await fetch('assets/json/quotes.json');
       const data = await response.json();
       const randomQuote = data[Math.floor(Math.random() * data.length)];
       this.displayQuote(randomQuote.quote, randomQuote.author);
